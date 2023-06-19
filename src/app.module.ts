@@ -3,12 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { UsersService } from './users/users.service';
-import { ProductsController } from './products/products.controller';
-import { ProductsService } from './products/products.service';
+import { ProductsModule } from './products/products.module';
+import { CommonModule } from './common/common.module';
+import { CoreModule } from './core/core.module';
 
 @Module({
-  imports: [],
-  controllers: [AppController, UsersController, ProductsController],
-  providers: [AppService, UsersService, ProductsService],
+  imports: [ProductsModule, CommonModule, CoreModule],
+  controllers: [AppController, UsersController],
+  providers: [AppService, UsersService],
 })
-export class AppModule {}
+export class AppModule {
+}
