@@ -1,6 +1,28 @@
-POST http://localhost:3000/users HTTP/1.1
+GET http://localhost:3000/products/ HTTP/1.1
+
+###
+
+POST http://localhost:3000/products/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "name": "Kerisnarendra"
+  "name": "Biscuit"
+}
+
+###
+
+POST http://localhost:3000/products/joi-validation-pipes HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+###
+
+POST http://localhost:3000/products/class-validator-pipes HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": ""
 }
