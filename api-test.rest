@@ -26,3 +26,7 @@ Content-Type: application/json
 {
   "name": ""
 }
+
+###
+
+GET http://localhost:3000/products/guard HTTP/1.1

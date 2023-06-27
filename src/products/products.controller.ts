@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Param, ParseIntPipe, NotFoundException, UsePipes } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Param, ParseIntPipe, NotFoundException, UsePipes, UseGuards, SetMetadata } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
@@ -7,18 +7,26 @@ import { CustomPipe } from 'src/pipes/custom-pipe';
 import { JoiValidationPipe } from 'src/pipes/joi-validation-pipe';
 import { createProductSchema } from './schemas/create-product.schema';
 import { ClassValidatorPipe } from 'src/pipes/class-validator-pipe copy';
+import { AuthGuard } from 'src/guards/auth-guard';
 
 @Controller('products')
 export class ProductsController {
     constructor(private productsService: ProductsService) {}
 
     @Post()
+    // @SetMetadata('roles', ['admin'])
     create(@Body() createProductDto: CreateProductDto): Product {
       return this.productsService.create(createProductDto);
     }
-  
+
     @Get()
     findAll(): Product[] {
+      return this.productsService.findAll();
+    }
+
+    @Get('guard')
+    @UseGuards(AuthGuard)
+    findAllWithGuard(): Product[] {
       return this.productsService.findAll();
     }
 

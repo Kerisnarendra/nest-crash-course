@@ -9,11 +9,16 @@ import { CoreModule } from './core/core.module';
 import { Middleware } from './middlewares/middleware';
 import { ProductsController } from './products/products.controller';
 import { FunctionMiddleware } from './middlewares/function-middleware';
+import { APP_GUARD } from '@nestjs/core';
+import { RoleGuard } from './guards/role-guard';
 
 @Module({
   imports: [ProductsModule, CommonModule, CoreModule],
   controllers: [AppController, UsersController],
-  providers: [AppService, UsersService],
+  providers: [AppService, UsersService, {
+    provide: APP_GUARD,
+    useClass: RoleGuard
+  }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
