@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Param, ParseIntPipe, NotFoundException, UsePipes, UseGuards, SetMetadata } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Param, ParseIntPipe, NotFoundException, UsePipes, UseGuards, SetMetadata, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
@@ -8,6 +8,11 @@ import { JoiValidationPipe } from 'src/pipes/joi-validation-pipe';
 import { createProductSchema } from './schemas/create-product.schema';
 import { ClassValidatorPipe } from 'src/pipes/class-validator-pipe copy';
 import { AuthGuard } from 'src/guards/auth-guard';
+import { LoggingInterceptor } from 'src/interceptors/logging.interceptor';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
+import { ExceptionInterceptor } from 'src/interceptors/exception.interceptor';
+import { error } from 'console';
+import { CacheInterceptor } from 'src/interceptors/cache.interceptor';
 
 @Controller('products')
 export class ProductsController {
@@ -27,6 +32,30 @@ export class ProductsController {
     @Get('guard')
     @UseGuards(AuthGuard)
     findAllWithGuard(): Product[] {
+      return this.productsService.findAll();
+    }
+
+    @Get('interceptor')
+    @UseInterceptors(LoggingInterceptor)
+    findAllWithInterceptor(): Product[] {
+      return this.productsService.findAll();
+    }
+
+    @Get('transform-interceptor')
+    @UseInterceptors(TransformInterceptor)
+    findAllWithTransformInterceptor(): Product[] {
+      return this.productsService.findAll();
+    }
+
+    @Get('exception-interceptor')
+    @UseInterceptors(ExceptionInterceptor)
+    findAllWithExceptionInterceptor(): Product[] {
+      throw error();
+    }
+
+    @Get('cache-interceptor')
+    @UseInterceptors(CacheInterceptor)
+    findAllWithCacheInterceptor(): Product[] {
       return this.productsService.findAll();
     }
 
