@@ -56,3 +56,14 @@ GET http://localhost:3000/products/exception-interceptor HTTP/1.1
 ###
 
 GET http://localhost:3000/products/cache-interceptor HTTP/1.1
+
+###
+
+POST http://localhost:3000/products/with-decorator HTTP/1.1
+Content-Type: application/json
+
+{
+  "product" : {
+    "name": "Decorator"
+  }
+}

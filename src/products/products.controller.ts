@@ -13,6 +13,7 @@ import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { ExceptionInterceptor } from 'src/interceptors/exception.interceptor';
 import { error } from 'console';
 import { CacheInterceptor } from 'src/interceptors/cache.interceptor';
+import { ProductDecorator } from 'src/decorators/product.decorator';
 
 @Controller('products')
 export class ProductsController {
@@ -112,7 +113,7 @@ export class ProductsController {
         throw error;
       }
     }
-    
+  
     @Post('joi-validation-pipes')
     @UsePipes(new JoiValidationPipe(createProductSchema))
     createWithValidationPipe(@Body() createProductDto: CreateProductDto): Product {
@@ -121,6 +122,11 @@ export class ProductsController {
 
     @Post('class-validator-pipes')
     createWithClassValidatorPipe(@Body(new ClassValidatorPipe()) createProductDto: CreateProductDto): Product {
+      return this.productsService.create(createProductDto);
+    }    
+
+    @Post('with-decorator')
+    createWithDecorator(@ProductDecorator() createProductDto: CreateProductDto): Product {
       return this.productsService.create(createProductDto);
     }    
 }
