@@ -1,7 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Param, ParseIntPipe, NotFoundException, UsePipes, UseGuards, SetMetadata, UseInterceptors } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { Product } from './entities/product.entity';
 import { CustomException } from 'src/exceptions/custom-exception';
 import { CustomPipe } from 'src/pipes/custom-pipe';
 import { JoiValidationPipe } from 'src/pipes/joi-validation-pipe';
@@ -14,6 +13,7 @@ import { ExceptionInterceptor } from 'src/interceptors/exception.interceptor';
 import { error } from 'console';
 import { CacheInterceptor } from 'src/interceptors/cache.interceptor';
 import { ProductDecorator } from 'src/decorators/product.decorator';
+import Product from './product.entity';
 
 @Controller('products')
 export class ProductsController {
@@ -21,43 +21,51 @@ export class ProductsController {
 
     @Post()
     // @SetMetadata('roles', ['admin'])
-    create(@Body() createProductDto: CreateProductDto): Product {
-      return this.productsService.create(createProductDto);
+    async create(@Body() createProductDto: CreateProductDto): Promise<Product> {
+      return await this.productsService.create(createProductDto);
+    }
+
+    @Post('bulk')
+    // @SetMetadata('roles', ['admin'])
+    async createBulk(@Body() createProductDto: CreateProductDto[]): Promise<Product[]> {
+      console.log('bulk')
+      console.log(createProductDto)
+      return await this.productsService.createBulk(createProductDto);
     }
 
     @Get()
-    findAll(): Product[] {
-      return this.productsService.findAll();
+    async findAll(): Promise<Product[]> {
+      return await this.productsService.findAll();
     }
 
     @Get('guard')
     @UseGuards(AuthGuard)
-    findAllWithGuard(): Product[] {
-      return this.productsService.findAll();
+    async findAllWithGuard(): Promise<Product[]>  {
+      return await this.productsService.findAll();
     }
 
     @Get('interceptor')
     @UseInterceptors(LoggingInterceptor)
-    findAllWithInterceptor(): Product[] {
-      return this.productsService.findAll();
+    async findAllWithInterceptor(): Promise<Product[]>  {
+      return await this.productsService.findAll();
     }
 
     @Get('transform-interceptor')
     @UseInterceptors(TransformInterceptor)
-    findAllWithTransformInterceptor(): Product[] {
-      return this.productsService.findAll();
+    async findAllWithTransformInterceptor(): Promise<Product[]>  {
+      return await this.productsService.findAll();
     }
 
     @Get('exception-interceptor')
     @UseInterceptors(ExceptionInterceptor)
-    findAllWithExceptionInterceptor(): Product[] {
+    async findAllWithExceptionInterceptor(): Promise<Product[]> {
       throw error();
     }
 
     @Get('cache-interceptor')
     @UseInterceptors(CacheInterceptor)
-    findAllWithCacheInterceptor(): Product[] {
-      return this.productsService.findAll();
+    async findAllWithCacheInterceptor(): Promise<Product[]> {
+      return await this.productsService.findAll();
     }
 
     @Get('throw-exception')
@@ -116,17 +124,17 @@ export class ProductsController {
   
     @Post('joi-validation-pipes')
     @UsePipes(new JoiValidationPipe(createProductSchema))
-    createWithValidationPipe(@Body() createProductDto: CreateProductDto): Product {
-      return this.productsService.create(createProductDto);
+    async createWithValidationPipe(@Body() createProductDto: CreateProductDto): Promise<Product> {
+      return await this.productsService.create(createProductDto);
     }
 
     @Post('class-validator-pipes')
-    createWithClassValidatorPipe(@Body(new ClassValidatorPipe()) createProductDto: CreateProductDto): Product {
-      return this.productsService.create(createProductDto);
+    async createWithClassValidatorPipe(@Body(new ClassValidatorPipe()) createProductDto: CreateProductDto): Promise<Product> {
+      return await this.productsService.create(createProductDto);
     }    
 
     @Post('with-decorator')
-    createWithDecorator(@ProductDecorator() createProductDto: CreateProductDto): Product {
-      return this.productsService.create(createProductDto);
+    async createWithDecorator(@ProductDecorator() createProductDto: CreateProductDto): Promise<Product> {
+      return await this.productsService.create(createProductDto);
     }    
 }

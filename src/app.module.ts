@@ -11,9 +11,14 @@ import { ProductsController } from './products/products.controller';
 import { FunctionMiddleware } from './middlewares/function-middleware';
 import { APP_GUARD } from '@nestjs/core';
 import { RoleGuard } from './guards/role-guard';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { dataSourceOptions } from './db/data-source';
 
 @Module({
-  imports: [ProductsModule, CommonModule, CoreModule],
+  imports: [
+    TypeOrmModule.forRoot(dataSourceOptions),  
+    ProductsModule, CommonModule, CoreModule,
+  ],
   controllers: [AppController, UsersController],
   providers: [AppService, UsersService, {
     provide: APP_GUARD,
@@ -21,6 +26,7 @@ import { RoleGuard } from './guards/role-guard';
   }],
 })
 export class AppModule implements NestModule {
+  // constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(Middleware, FunctionMiddleware)
